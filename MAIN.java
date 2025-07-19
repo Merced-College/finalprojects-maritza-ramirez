@@ -6,7 +6,9 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Queue;
 import java.io.File;
 
 //*************************************DEFINING METHODS************************************
@@ -32,6 +34,10 @@ public class IGETCPlanner {
         "Area 6: Language Other than English (UC only)",
         "Area 7: Ethnic Studies",
     };
+
+    static HashMap<String, Course[]> geCourses = new HashMap<>();
+    static LinkedList<Course> plannedCourses = new LinkedList<>();
+    static Queue<String> semesterQueue = new LinkedList<>();
 
     //*************************************START OF PROGRAM*************************************
     public static void main(String[] args) {
@@ -73,7 +79,7 @@ public class IGETCPlanner {
     System.out.println("Have you completed any college courses? (yes/no): ");
         if (scan.nextLine().equalsIgnoreCase("yes")) {
             while (true) {
-                System.out.print("Enter course name (or type '-1' to finish): ");
+                System.out.print("Enter course name (or type '-4' to finish): ");
                 String completed = scan.nextLine();
                 if (completed.equals("-4")) break;
                 student.completedCourses.add(completed.toUpperCase());
@@ -81,8 +87,8 @@ public class IGETCPlanner {
         } else {
             System.out.println("No completed courses recorded.");
         }
-
-    
+        initializeCourses();
+        generateSemesterQueue(student);
 
     //NOTES ON REMINDERS AND LIMITS OF PROGRAM
     System.out.println("*************************************NOTES*************************************");
@@ -90,7 +96,22 @@ public class IGETCPlanner {
 
     System.out.println("REMINDER: This is only taking into account the highschool equivalency credit classes unless absolutely necessary to take a course not equivalent. As well it \ndoes not take into account majors yet.");
     System.out.println("**If you want to complete a major I suggest you look directly through the college website for associates and see if there is any overlapping with general ed.");
+    
+    //IGETC AREA COURSE COMPLETED VALIDATION
+    for (String area : IGETC_AREAS) {
+            Course[] options = geCourses.get(area);
 
+            // Skip already completed
+            boolean alreadyCompleted = false;
+            for (Course c : options) {
+                if (student.completedCourses.contains(c.name.toUpperCase())) {
+                    System.out.println("Skipping " + area + " (already completed via " + c.name + ")");
+                    alreadyCompleted = true;
+                    break;
+                }
+            }
+            if (alreadyCompleted) continue;
+    
     //*************************************COURSE PLANNING*************************************
     System.out.println("*************************************COURSE PLANNING*************************************");
 
