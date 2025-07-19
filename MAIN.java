@@ -13,11 +13,27 @@ import java.io.File;
 
 //*************************************DEFINING METHODS************************************
 public class MAIN{
-    public static class studentINPUT{
-    int schoolYear;
-    String semester;
-    boolean wantsSummer;
-    LinkedList<String> completedCourses;
+    class Course {
+    String name;
+    boolean countsForHS;
+
+    Course(String name, boolean countsForHS) {
+        this.name = name;
+        this.countsForHS = countsForHS;
+    }
+}   
+    class studentINPUT {
+        int schoolYear;
+        String semester;
+        boolean wantsSummer;
+        LinkedList<String> completedCourses;
+
+    studentINPUT(int schoolYear, String semester, boolean wantsSummer, LinkedList<String> completedCourses) {
+        this.schoolYear = schoolYear;
+        this.semester = semester;
+        this.wantsSummer = wantsSummer;
+        this.completedCourses = completedCourses;
+    }
     }
     
 public class IGETCPlanner {
@@ -34,6 +50,7 @@ public class IGETCPlanner {
         "Area 6: Language Other than English (UC only)",
         "Area 7: Ethnic Studies",
     };
+}
 
     static HashMap<String, Course[]> geCourses = new HashMap<>();
     static LinkedList<Course> plannedCourses = new LinkedList<>();
@@ -69,11 +86,7 @@ public class IGETCPlanner {
     boolean wantsSummer = summerResponse.equalsIgnoreCase("yes");
     
     //Creating student
-    studentINPUT student = new studentINPUT();
-    student.schoolYear = schoolYear;
-    student.semester = semester;
-    student.wantsSummer = wantsSummer;
-    student.completedCourses = new LinkedList<>();
+    studentINPUT student = new studentINPUT(schoolYear, semester, wantsSummer, new LinkedList<>());
 
     //Completed courses user input
     System.out.println("Have you completed any college courses? (yes/no): ");
@@ -111,6 +124,22 @@ public class IGETCPlanner {
                 }
             }
             if (alreadyCompleted) continue;
+            System.out.println("\n" + area);
+            for (int i = 0; i < options.length; i++) {
+                String marker = options[i].countsForHS() ? "(*)" : "";
+                System.out.println((i + 1) + ". " + options[i].name() + " " + marker);
+            }
+
+            System.out.print("Choose a course number for this area: ");
+            int choice = scan.nextInt();
+            scan.nextLine();
+            plannedCourses.add(options[choice - 1]);
+        }
+        System.out.println("\nGeneral Education Plan:");
+        recursivePlanner(plannedCourses, semesterQueue);
+    }
+    
+
     
     //*************************************COURSE PLANNING*************************************
     System.out.println("*************************************COURSE PLANNING*************************************");
