@@ -6,6 +6,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.io.File;
 
 //*************************************DEFINING METHODS************************************
@@ -14,15 +15,31 @@ public class MAIN{
     int schoolYear;
     String semester;
     boolean wantsSummer;
-    boolean hasPriorCourses;
+    LinkedList<String> completedCourses;
     }
     
+public class IGETCPlanner {
+    static final String[] IGETC_AREAS = {
+        "Area 1A: English Communication",
+        "Area 1B: Critical Thinking",
+        "Area 1C: Oral Communication (CSU only)",
+        "Area 2: Mathematical Concepts and Quantitative Reasoning",
+        "Area 3A: Arts",
+        "Area 3B: Humanities",
+        "Area 4: Social and Behavioral Sciences",
+        "Area 5A: Physical Sciences",
+        "Area 5B: Biological Sciences",
+        "Area 6: Language Other than English (UC only)",
+        "Area 7: Ethnic Studies",
+    };
 
-//*************************************START OF PROGRAM*************************************
-public static void main(String[] args) {
+    //*************************************START OF PROGRAM*************************************
+    public static void main(String[] args) {
     Scanner scan = new Scanner(System.in);
-    //Introductory message
+    
+    //Program message
     System.out.println("*************************************START OF PLANNING*************************************");
+    
     //*************************************START OF PLANNING*************************************
     //Welcome message
     System.out.println("Welcome to the college course planning program!");
@@ -61,7 +78,7 @@ public static void main(String[] args) {
 
     //*************************************COURSE PLANNING*************************************
     System.out.println("*************************************COURSE PLANNING*************************************");
-    
+
     //Ending message
     System.out.println("*************************************END OF PLANNING*************************************");
 }
