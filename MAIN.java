@@ -11,10 +11,9 @@ import java.io.File;
 //*************************************DEFINING METHODS************************************
 public class MAIN{
     public static class studentINPUT{
-    String schoolYear;
+    int schoolYear;
     String semester;
     boolean wantsSummer;
-    String goal;
     boolean hasPriorCourses;
     }
     
@@ -25,8 +24,43 @@ public static void main(String[] args) {
     //Introductory message
     System.out.println("*************************************START OF PLANNING*************************************");
     //*************************************START OF PLANNING*************************************
-    System.out.println("What it your current school year? (9th, 10th, 11th, 12th)");
-    String schoolYear = scan.nextLine();
+    //Welcome message
+    System.out.println("Welcome to the college course planning program!");
+
+    //Schoool year user input
+    System.out.println("What is your current school year? (9, 10, 11, 12)");
+    //scanning to get response
+    int schoolYear = scan.nextInt();
+    scan.nextLine(); // Consume the newline character left by nextInt()
+
+    //Semester user input
+    System.out.println("What semester are you currently in? (Fall, Spring, Summer)");
+    //scanning to get response
+    String semester = scan.nextLine();
+
+    //Summer courses user input
+    System.out.println("Do you want to take summer courses? (yes or no)");
+    //scanning to get response
+    String summerResponse = scan.nextLine();
+    //Converting response to boolean
+    boolean wantsSummer = summerResponse.equalsIgnoreCase("yes");
+
+    //Prior courses user input
+    System.out.println("Have you taken any prior courses? (yes or no)");
+    //scanning to get response
+    String priorCoursesResponse = scan.nextLine();
+    //Converting response to boolean
+    boolean hasPriorCourses = priorCoursesResponse.equalsIgnoreCase("yes");
+
+    //NOTES ON REMINDERS AND LIMITS OF PROGRAM
+    System.out.println("*************************************NOTES*************************************");
+    System.out.println("Alright! Now having previous knowledge of your current standing this program will promopt you questions to help decide what courses you should take in the nextsemesters according to the highschool equivalency credit. Doing this will help you get college credit equivalent to highschool which boosts your GPA if you \nget a good grade in the class and could finish college and highschool requirements. But as well keep in mind that if you get a low grade in the class it will \nlower your GPA. So do your best! ");
+
+    System.out.println("REMINDER: This is only taking into account the highschool equivalency credit classes unless absolutely necessary to take a course not equivalent. As well it \ndoes not take into account majors yet.");
+    System.out.println("**If you want to complete a major I suggest you look directly through the college website for associates and see if there is any overlapping with general ed.");
+
+    //*************************************COURSE PLANNING*************************************
+    System.out.println("*************************************COURSE PLANNING*************************************");
     
     //Ending message
     System.out.println("*************************************END OF PLANNING*************************************");
