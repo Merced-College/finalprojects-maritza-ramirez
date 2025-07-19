@@ -61,13 +61,28 @@ public class IGETCPlanner {
     String summerResponse = scan.nextLine();
     //Converting response to boolean
     boolean wantsSummer = summerResponse.equalsIgnoreCase("yes");
+    
+    //Creating student
+    studentINPUT student = new studentINPUT();
+    student.schoolYear = schoolYear;
+    student.semester = semester;
+    student.wantsSummer = wantsSummer;
+    student.completedCourses = new LinkedList<>();
 
-    //Prior courses user input
-    System.out.println("Have you taken any prior courses? (yes or no)");
-    //scanning to get response
-    String priorCoursesResponse = scan.nextLine();
-    //Converting response to boolean
-    boolean hasPriorCourses = priorCoursesResponse.equalsIgnoreCase("yes");
+    //Completed courses user input
+    System.out.println("Have you completed any college courses? (yes/no): ");
+        if (scan.nextLine().equalsIgnoreCase("yes")) {
+            while (true) {
+                System.out.print("Enter course name (or type '-1' to finish): ");
+                String completed = scan.nextLine();
+                if (completed.equals("-4")) break;
+                student.completedCourses.add(completed.toUpperCase());
+            }
+        } else {
+            System.out.println("No completed courses recorded.");
+        }
+
+    
 
     //NOTES ON REMINDERS AND LIMITS OF PROGRAM
     System.out.println("*************************************NOTES*************************************");
