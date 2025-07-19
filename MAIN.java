@@ -13,7 +13,7 @@ import java.io.File;
 
 //*************************************DEFINING METHODS************************************
 public class MAIN{
-    class Course {
+    static class Course {
     String name;
     boolean countsForHS;
 
@@ -101,7 +101,7 @@ public class IGETCPlanner {
             System.out.println("No completed courses recorded.");
         }
         initializeCourses();
-        generateSemesterQueue(student);
+        generatePLAN(student);
 
     //NOTES ON REMINDERS AND LIMITS OF PROGRAM
     System.out.println("*************************************NOTES*************************************");
@@ -138,8 +138,83 @@ public class IGETCPlanner {
         System.out.println("\nGeneral Education Plan:");
         recursivePlanner(plannedCourses, semesterQueue);
     }
-    
+    static void recursivePlanner(LinkedList<Course> courses, Queue<String> semesters) {
+        if (courses.isEmpty() || semesters.isEmpty()) return;
 
+        String sem = semesters.poll();
+        System.out.println("\nSemester: " + sem);
+
+        int slots = Math.min(2, courses.size());
+        for (int i = 0; i < slots; i++) {
+            Course course = courses.removeFirst();
+            String marker = course.countsForHS ? "(*)" : "";
+            System.out.println("- " + course.name + " " + marker);
+        }
+
+        recursivePlanner(courses, semesters);
+    }
+    static void initializeCourses() {
+        // Area 1A: English Communication
+        geCourses.put("Area 1A: English Communication", new Course[]{
+            new Course("English 1A", true)
+        });
+
+        // Area 1B: Critical Thinking
+        geCourses.put("Area 1B: Critical Thinking", new Course[]{
+            new Course("ENGL 13", true),
+        });
+
+        // Area 1C: Oral Communication (CSU only)
+        geCourses.put("Area 1C: Oral Communication (CSU only)", new Course[]{
+            new Course("COMM 1", false),
+        });
+
+        // Area 2: Mathematical Concepts and Quantitative Reasoning
+        geCourses.put("Area 2: Mathematical Concepts and Quantitative Reasoning(MUST FINISH INTEG MATH 3)", new Course[]{
+            new Course("Math 02", true),
+            new Course("Math 10", true)
+        });
+
+        // Area 3A: Arts
+        geCourses.put("Area 3A: Arts", new Course[]{
+            new Course("ART 15", true),
+            new Course("ART 24", true),
+            new Course("ARTD 40A", true),
+            new Course("MUSG 10", true),
+            new Course("MUSG 14", true)
+        });
+
+        // Area 3B: Humanities
+        geCourses.put("Area 3B: Humanities", new Course[]{
+            new Course("History 17A", true),
+            new Course("History 17B", true)
+        });
+
+        // Area 4: Social and Behavioral Sciences
+        geCourses.put("Area 4: Social and Behavioral Sciences", new Course[]{
+            new Course("CLDV 01", true),
+            new Course("CLDV 02", true)
+        });
+
+        // Area 5A: Physical Sciences
+        geCourses.put("Area 5A: Physical Sciences", new Course[]{
+            new Course("CHEM 02A", true),
+            new Course("PHYS 02A", true)
+        });
+
+        // Area 5B: Biological Sciences
+        geCourses.put("Area 5B: Biological Sciences", new Course[]{
+            new Course("BIOL 01", true)
+        });
+
+        // Area 6: Language Other than English (UC only)
+        geCourses.put("Area 6: Language Other than English (UC only)", new Course[]{
+            new Course("SPAN 01", true),
+        });
+        // Area 7: Ethnic Studies
+        geCourses.put("Area 7: Ethnic Studies", new Course[]{
+            new Course("ETHN 01", true)
+        });
     
     //*************************************COURSE PLANNING*************************************
     System.out.println("*************************************COURSE PLANNING*************************************");
@@ -147,4 +222,4 @@ public class IGETCPlanner {
     //Ending message
     System.out.println("*************************************END OF PLANNING*************************************");
 }
-}
+    }
