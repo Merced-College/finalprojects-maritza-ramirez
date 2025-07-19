@@ -24,9 +24,10 @@ public static void main(String[] args) {
     Scanner scan = new Scanner(System.in);
     //Introductory message
     System.out.println("*************************************START OF PLANNING*************************************");
+    //*************************************START OF PLANNING*************************************
     System.out.println("What it your current school year? (9th, 10th, 11th, 12th)");
     String schoolYear = scan.nextLine();
-    System.out.println(schoolYear);
+    
     //Ending message
     System.out.println("*************************************END OF PLANNING*************************************");
 }
