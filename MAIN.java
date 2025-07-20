@@ -83,7 +83,7 @@ public class MAIN{
         studentINPUT student = new studentINPUT(schoolYear, semester, wantsSummer, new LinkedList<>());
 
         //Completed courses user input
-        System.out.println("Have you completed any college courses? (yes/no): ");
+        System.out.println("Have you completed any college courses?(ex. ENGL 01A) (yes/no): ");
         if (scan.nextLine().equalsIgnoreCase("yes")) {
             while (true) {
                 System.out.print("Enter course name (or type '-4' to finish): ");
@@ -132,6 +132,10 @@ public class MAIN{
         // IGETC AREA COURSE COMPLETED VALIDATION
         for (String area : IGETC_AREAS) {
             Course[] options = geCourses.get(area);
+            if (options == null) {
+                System.out.println("No courses found for: " + area);
+                continue;
+            }
 
             // Skip already completed
             boolean alreadyCompleted = false;
@@ -143,16 +147,22 @@ public class MAIN{
                 }
             }
             if (alreadyCompleted) continue;
+
             System.out.println("\n" + area);
             for (int i = 0; i < options.length; i++) {
                 String marker = options[i].countsForHS ? "(*)" : "";
                 System.out.println((i + 1) + ". " + options[i].name + " " + marker);
             }
 
-            System.out.print("Choose a course number for this area: ");
-            int choice = scan.nextInt();
-            scan.nextLine();
-            plannedCourses.add(options[choice - 1]);
+            System.out.print("Choose course number(s) for this area (comma separated,ex. 1,3): ");
+            String input = scan.nextLine();
+            String[] selections = input.split(",");
+            for (String sel : selections) {
+                int idx = Integer.parseInt(sel.trim()) - 1;
+                if (idx >= 0 && idx < options.length) {
+                    plannedCourses.add(options[idx]);
+                }
+            }
         }
         System.out.println("\nGeneral Education Plan:");
         recursivePlanner(plannedCourses, semesterQueue);
@@ -177,10 +187,13 @@ public class MAIN{
         recursivePlanner(courses, semesters);
     }
 
+    //*************************************INITIALIZE COURSES*************************************
+    // Initialize the courses for each IGETC area
     static void initializeCourses() {
+        System.out.println("*************************************COURSE AREA CRITERIA IMPORTANT*************************************");
         // Area 1A: English Communication
         geCourses.put("Area 1A: English Communication", new Course[]{
-            new Course("English 1A", true)
+            new Course("ENGL 01A", true)
         });
 
         // Area 1B: Critical Thinking
@@ -193,33 +206,45 @@ public class MAIN{
             new Course("COMM 1", false),
         });
 
+        System.out.println("Choose 1 course from Area 2: MUST COMPLETE INTEG MATH 3 FOR AREA 2");
         // Area 2: Mathematical Concepts and Quantitative Reasoning
         geCourses.put("Area 2: Mathematical Concepts and Quantitative Reasoning", new Course[]{
             new Course("Math 02", true),
             new Course("Math 10", true)
         });
 
+        System.out.println("Choose 3 courses total for Area 3: RECOMMEND TAKING 1 ART THEN BOTH HISTORY 04 A/B FOR FINISH Sophomore HIST.");
         // Area 3A: Arts
         geCourses.put("Area 3A: Arts", new Course[]{
             new Course("ART 15", true),
             new Course("ART 24", true),
             new Course("ARTD 40A", true),
+            new Course("ARTD 40B", true),
             new Course("MUSG 10", true),
-            new Course("MUSG 14", true)
+            new Course("MUSG 14", true),
+            new Course("THTR 01", true)
         });
 
         // Area 3B: Humanities
         geCourses.put("Area 3B: Humanities", new Course[]{
-            new Course("History 17A", true),
-            new Course("History 17B", true)
+            new Course("HIST 04A", true),
+            new Course("HIST 04B", true)
         });
 
+        System.out.println("Choose 2 courses total for Area 4: RECOMMEND TAKING 1 ART THEN BOTH HISTORY 17 A/B FOR Junior Sophomore HIST.");
         // Area 4: Social and Behavioral Sciences
         geCourses.put("Area 4: Social and Behavioral Sciences", new Course[]{
+            new Course("HIST 17A", true),
+            new Course("HIST 17B", true),
             new Course("CLDV 01", true),
-            new Course("CLDV 02", true)
+            new Course("CLDV 02", true),
+            new Course("ECON 01", true),
+            new Course("ECON 02", true),
+            new Course("POSC 01", true),
+            new Course("SOC 01", true)
         });
 
+        System.out.println("Choose 2 courses total for Area 5: 1 in 5A and another in 5B: THESE CAN FILL IN FOR INTRODUCTORY Sophomore SCI.");
         // Area 5A: Physical Sciences
         geCourses.put("Area 5A: Physical Sciences", new Course[]{
             new Course("CHEM 02A", true),
@@ -228,17 +253,21 @@ public class MAIN{
 
         // Area 5B: Biological Sciences
         geCourses.put("Area 5B: Biological Sciences", new Course[]{
-            new Course("BIOL 01", true)
+            new Course("BIOL 01", true),
+            new Course("BIOL 06", true)
         });
 
+        System.out.println("Choose 1 course for Area 6: RECOMMEND TAKING A LANGUAGE YOUR FAMILIAR WITH THIS IS EQUIVALENT to 2 YEARS OF HIGH SCHOOL LANGUAGE.");
         // Area 6: Language Other than English (UC only)
         geCourses.put("Area 6: Language Other than English (UC only)", new Course[]{
             new Course("SPAN 01", true),
+            new Course("HMNG 01", true),
+            new Course("FREN 01", true)
         });
 
         // Area 7: Ethnic Studies
         geCourses.put("Area 7: Ethnic Studies", new Course[]{
-            new Course("ETHN 01", true)
+            new Course("ETHN 01", false)
         });
     }
 }
