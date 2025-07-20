@@ -3,13 +3,11 @@
 //This program is 
 
 //*************************************IMPORTS*************************************
-import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.io.File;
+import java.util.Stack;
 
 //*************************************DEFINING METHODS************************************
 public class MAIN{
@@ -50,10 +48,10 @@ public class MAIN{
         "Area 6: Language Other than English (UC only)",
         "Area 7: Ethnic Studies",
     };
-
     static HashMap<String, Course[]> geCourses = new HashMap<>();
     static LinkedList<Course> plannedCourses = new LinkedList<>();
     static Queue<String> semesterQueue = new LinkedList<>();
+    static Stack<Course> undoStack = new Stack<>();
 
     //*************************************START OF PROGRAM*************************************
     public static void main(String[] args) {
@@ -105,6 +103,9 @@ public class MAIN{
         System.out.println("REMINDER: This is only taking into account the high school equivalency credit classes unless absolutely necessary to take a course not equivalent. As well it does not take into account majors yet.");
         System.out.println("**If you want to complete a major I suggest you look directly through the college website for associates and see if there is any overlapping with general ed.");
         System.out.println("(MUST FINISH INTEG MATH 3 FOR AREA 2) - This is a requirement for the math area, so if you have not completed it, you will need to take it before proceeding with other math courses.");
+
+        // Call the end method here
+        end(args);
     }
 
     static void generatePLAN(studentINPUT student, Scanner scan) {
@@ -128,6 +129,8 @@ public class MAIN{
 
         //*************************************COURSE PLANNING*************************************
         System.out.println("*************************************COURSE PLANNING*************************************");
+
+        plannedCourses.clear(); // Clear once before planning
 
         // IGETC AREA COURSE COMPLETED VALIDATION
         for (String area : IGETC_AREAS) {
@@ -154,13 +157,22 @@ public class MAIN{
                 System.out.println((i + 1) + ". " + options[i].name + " " + marker);
             }
 
-            System.out.print("Choose course number(s) for this area (comma separated,ex. 1,3): ");
+            undoStack.clear(); // Clear the stack for each area selection
+            System.out.println("You can select courses from this area. Type 'undo' to remove the last selection.");
+            System.out.print("Choose course number(s) for this area (comma separated,ex. 1,3 or type 'undo'): ");
             String input = scan.nextLine();
+            if (input.equalsIgnoreCase("undo") && !undoStack.isEmpty()) {
+                Course removed = undoStack.pop();
+                plannedCourses.remove(removed);
+                System.out.println("Last course selection undone: " + removed.name);
+                continue;
+            }
             String[] selections = input.split(",");
             for (String sel : selections) {
                 int idx = Integer.parseInt(sel.trim()) - 1;
                 if (idx >= 0 && idx < options.length) {
                     plannedCourses.add(options[idx]);
+                    undoStack.push(options[idx]); // Push to stack for undo
                 }
             }
         }
@@ -269,5 +281,11 @@ public class MAIN{
         geCourses.put("Area 7: Ethnic Studies", new Course[]{
             new Course("ETHN 01", false)
         });
+    } // End of initializeCourses
+
+    // ENDING STATEMENT
+    // This method is called at the end of the program to indicate completion
+    public static void end(String[] args) {
+        System.out.println("**************************************END OF PROGRAM*************************************");
     }
 }
