@@ -9,6 +9,18 @@ Date: 7/14/25
 Program:
 I decided that for my final project it will be a Dual enrollment course planner. I decided to choose this due to struggling to organize my classes and not knowing where to start as a high school student. Currently five different classes I wished I knew about so many resources when in high school but having researched and now in my senior year, I decided I would want to help students out who have the motivation. 
 
+C. Evaluate tradeoffs in lifetime management (reference counting vs. garbage collection). 
+
+After a variable isn’t being used anymore, the Java virtual machine will garbage collect the variable. This frees up data and makes the program more efficient without the coder having to think about it. I could have chosen to manually free variables after I was done. For example, at the beginning of the program, I created a lot of variables when I was collecting the data. 
+
+D. Explain how abstraction mechanisms support the creation of reusable software components. 
+
+I wanted to ensure that the user has some protection from entering invalid inputs. I created a function to collect the user’s responses. I pass in the question and a list of the accepted answers, along with a data type. The act of creating this function, which I reused repeatedly, allowed the code to be more readable and functional compared to when I didn’t validate user input. One significant benefit of this is that if there is a bug or adjustment I want to make, I only need to fix this one function.  
+
+F. Compare and contrast object-oriented analysis and design with structured analysis and design. 
+
+Structured analysis and design is more linear and resembles using a set of mathematical functions to solve a physics problem. In contrast, object-oriented analysis shifts this and allows for the creation of tools with a greater level of abstraction. This also allows us, as programmers, to create lists of objects with their own sets of data and functions to manipulate them. Or have a class with static functions or global variables that are shared and affect all instances equally. I tend to use a more linear approach, but have been trying to use more object-oriented thinking and also employ more recursive functions and learn to trust the abstraction process and that the next call will work to help me solve my goal.  
+
 Notes:
 This program only works for Merced College currently and only general education has been implented as it is still under testing. I am working on making a better version soon that will work under more circumstances. As well this is missing several features to be considered fully reliable yet.
 
