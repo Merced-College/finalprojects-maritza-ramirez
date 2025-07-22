@@ -4,22 +4,16 @@
 
 //*************************************IMPORTS*************************************
 import java.util.Scanner;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 
 //*************************************DEFINING METHODS************************************
-public class MAIN{
-    static class Course {
-        String name;
-        boolean countsForHS;
-
-        Course(String name, boolean countsForHS) {
-            this.name = name;
-            this.countsForHS = countsForHS;
-        }
-    }   
+public class DuelEnrollment{
+    record Course(String name, boolean countsForHS) {} // Record to hold course information
 
     static class studentINPUT {
         int schoolYear;
@@ -34,6 +28,41 @@ public class MAIN{
             this.completedCourses = completedCourses;
         }
     }
+    //public class InputHelper {
+    private static final Scanner scan = new Scanner(System.in);
+
+
+    // Generic method to get validated input
+    public static <T> T getValidatedInput(String prompt, List<T> validOptions, Class<T> type) {
+        System.out.println(prompt);
+        T input = null;
+
+
+        while (true) {
+            try {
+                String userInput = scan.nextLine().trim();
+
+
+                if (type == Integer.class) {
+                    input = type.cast(Integer.parseInt(userInput));
+                } else if (type == String.class) {
+                    input = type.cast(userInput);
+                }
+
+
+                if (validOptions.contains(input)) {
+                    return input;
+                } else {
+                    System.out.println("Invalid option. Try again:");
+                }
+
+
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter a " + type.getSimpleName() + ".");
+            }
+        }
+    } // End of getValidatedInput
+
 
     static final String[] IGETC_AREAS = {
         "Area 1A: English Communication",
@@ -48,9 +77,14 @@ public class MAIN{
         "Area 6: Language Other than English (UC only)",
         "Area 7: Ethnic Studies",
     };
+
+    // HashMap to hold courses for each IGETC area
     static HashMap<String, Course[]> geCourses = new HashMap<>();
+    // LinkedList to hold planned courses, Queue for semesters, and Stack for undo functionality
     static LinkedList<Course> plannedCourses = new LinkedList<>();
+    // Queue to hold semesters for planning
     static Queue<String> semesterQueue = new LinkedList<>();
+    // Stack to hold courses for undo functionality
     static Stack<Course> undoStack = new Stack<>();
 
     //*************************************START OF PROGRAM*************************************
@@ -63,18 +97,18 @@ public class MAIN{
         //Welcome message
         System.out.println("Welcome to the college course planning program!");
 
-        //School year user input
-        System.out.println("What is your current school year? (9, 10, 11, 12)");
-        int schoolYear = scan.nextInt();
-        scan.nextLine(); // Consume the newline character left by nextInt()
-
+       //School year user input
+        int schoolYear = getValidatedInput("What is your current school year? (9, 10, 11, 12)",
+        Arrays.asList(9, 10, 11, 12), Integer.class);
+        
         //Semester user input
-        System.out.println("What semester are you currently in? (Fall, Spring, Summer)");
-        String semester = scan.nextLine();
+        String semester = getValidatedInput("What semester are you currently in? (Fall, Spring, Summer)", 
+        Arrays.asList("Fall", "Spring", "Summer"), String.class);
+
 
         //Summer courses user input
-        System.out.println("Do you want to take summer courses? (yes or no)");
-        String summerResponse = scan.nextLine();
+        String summerResponse = getValidatedInput("Do you want to take summer courses? (yes or no)",
+        Arrays.asList("yes", "no"), String.class);
         boolean wantsSummer = summerResponse.equalsIgnoreCase("yes");
 
         //Creating student
@@ -82,7 +116,11 @@ public class MAIN{
 
         //Completed courses user input
         System.out.println("Have you completed any college courses?(ex. ENGL 01A) (yes/no): ");
-        if (scan.nextLine().equalsIgnoreCase("yes")) {
+        String completedCoursesResponse = "";
+        while (!(Arrays.asList("yes", "no").contains(completedCoursesResponse))) {
+            completedCoursesResponse = scan.nextLine();
+        }
+        if (completedCoursesResponse.equalsIgnoreCase("yes")) {
             while (true) {
                 System.out.print("Enter course name (or type '-4' to finish): ");
                 String completed = scan.nextLine();
@@ -120,20 +158,21 @@ public class MAIN{
         }
 
         // Add semesters to queue
-        for (int i = startIndex; i < semesters.length; i++) {
-            semesterQueue.add(semesters[i]);
+        for (int i = startIndex; i < semesters.length + startIndex; i++) {
+            semesterQueue.add(semesters[i % semesters.length]); // Will loop back around so all the semesters will be in queue
         }
-        if (student.wantsSummer) {
-            semesterQueue.add("Summer");
+        if (!student.wantsSummer) {
+            semesterQueue.remove("Summer");
         }   
 
         //*************************************COURSE PLANNING*************************************
         System.out.println("*************************************COURSE PLANNING*************************************");
-
         plannedCourses.clear(); // Clear once before planning
 
         // IGETC AREA COURSE COMPLETED VALIDATION
-        for (String area : IGETC_AREAS) {
+        Queue<String> IGETC_AREAS_Queue = new LinkedList<>(Arrays.asList(IGETC_AREAS)); 
+        while (!IGETC_AREAS_Queue.isEmpty()) {
+            String area = IGETC_AREAS_Queue.poll();
             Course[] options = geCourses.get(area);
             if (options == null) {
                 System.out.println("No courses found for: " + area);
@@ -157,46 +196,76 @@ public class MAIN{
                 System.out.println((i + 1) + ". " + options[i].name + " " + marker);
             }
 
-            undoStack.clear(); // Clear the stack for each area selection
+            //undoStack.clear(); // Clear the stack for each area selection
             System.out.println("You can select courses from this area. Type 'undo' to remove the last selection.");
             System.out.print("Choose course number(s) for this area (comma separated,ex. 1,3 or type 'undo'): ");
-            String input = scan.nextLine();
-            if (input.equalsIgnoreCase("undo") && !undoStack.isEmpty()) {
-                Course removed = undoStack.pop();
-                plannedCourses.remove(removed);
-                System.out.println("Last course selection undone: " + removed.name);
-                continue;
-            }
+            while (true) { 
+                try {
+                    String input = scan.nextLine();
+                    if (input.equalsIgnoreCase("undo") && !undoStack.isEmpty()) {
+                        Course removed = undoStack.pop();
+                        // We add the area back to the end so we check at the end if we need to ask the user again
+                        // (if they no longer fufill the requirement)
+                        IGETC_AREAS_Queue.add(area); // Add to the back of the linked list
+                        plannedCourses.remove(removed);
+                        System.out.println("Last course selection undone: " + removed.name);
+                        continue;
+                    }
+
             String[] selections = input.split(",");
             for (String sel : selections) {
                 int idx = Integer.parseInt(sel.trim()) - 1;
                 if (idx >= 0 && idx < options.length) {
                     plannedCourses.add(options[idx]);
                     undoStack.push(options[idx]); // Push to stack for undo
+                } else {throw new NumberFormatException("");} // So it is redone 
+                    }
+                    break;
+                } catch (NumberFormatException e) {
+                    System.out.println("INVALID input:");
                 }
             }
         }
         System.out.println("\nGeneral Education Plan:");
-        recursivePlanner(plannedCourses, semesterQueue);
+        // Calculate the number of semesters left in high school
+        int sem_left = (12 - student.schoolYear); // how many years until graduation
+        // Multiply by 2 or 3 depending on whether student wants summer semesters
+        if (student.wantsSummer) {
+            sem_left *= 3; // Fall, Spring, Summer
+        } else {
+            sem_left *= 2; // Fall and Spring only
+        }
+        // Adjust if the current semester is Spring (Spring is the second semester of the year)
+        if (student.semester.equalsIgnoreCase("Spring")) {
+            sem_left -= 1; // Already halfway through this school year
+        } else if (student.wantsSummer && student.semester.equals("Summer")) {
+            sem_left -= 2;
+        }
+        recursivePlanner(plannedCourses, semesterQueue, sem_left);
+        // Print the planned courses
 
         //Ending message
         System.out.println("*************************************END OF PLANNING*************************************");
     }
 
-    static void recursivePlanner(LinkedList<Course> courses, Queue<String> semesters) {
-        if (courses.isEmpty() || semesters.isEmpty()) return;
-
+    static void recursivePlanner(LinkedList<Course> courses, Queue<String> semesters, int sem_left) {
+        if (courses.isEmpty() || sem_left <= 0) return;
+        sem_left -= 1;
         String sem = semesters.poll();
+        semesters.add(sem); // Add back to the end of the Queue 
         System.out.println("\nSemester: " + sem);
 
-        int slots = Math.min(2, courses.size());
+
+
+
+        int slots = Math.min(2, courses.size()); // Max classes per semester
         for (int i = 0; i < slots; i++) {
             Course course = courses.removeFirst();
             String marker = course.countsForHS ? "(*)" : "";
             System.out.println("- " + course.name + " " + marker);
         }
-
-        recursivePlanner(courses, semesters);
+        // Recursively call for the next semester
+        recursivePlanner(courses, semesters, sem_left);
     }
 
     //*************************************INITIALIZE COURSES*************************************
