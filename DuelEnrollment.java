@@ -277,7 +277,7 @@ public class DuelEnrollment{
         semesters.add(sem); // Add back to the end of the Queue 
         System.out.println("\nSemester: " + sem);
 
-        int slots = Math.min(3, courses.size()); // Max classes per semester
+        int slots = Math.min(2, courses.size()); // Max classes per semester
         for (int i = 0; i < slots; i++) {
             Course course = courses.removeFirst();
             String marker = course.countsForHS ? "(*)" : "";
