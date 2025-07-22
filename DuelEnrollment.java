@@ -188,6 +188,7 @@ public class DuelEnrollment{
         // This loop iterates through each IGETC area and prompts the user to select courses
         Queue<String> IGETC_AREAS_Queue = new LinkedList<>(Arrays.asList(IGETC_AREAS)); 
         // This loop will continue until all areas have been processed
+        String lastArea = "";
         while (!IGETC_AREAS_Queue.isEmpty()) {
             String area = IGETC_AREAS_Queue.poll();
             // Check if the area is already completed
@@ -224,7 +225,7 @@ public class DuelEnrollment{
                         Course removed = undoStack.pop();
                         // We add the area back to the end so we check at the end if we need to ask the user again
                         // (if they no longer fufill the requirement)
-                        IGETC_AREAS_Queue.add(area); // Add to the back of the linked list
+                        IGETC_AREAS_Queue.add(lastArea); // Add to the back of the linked list
                         plannedCourses.remove(removed);
                         System.out.println("Last course selection undone: " + removed.name);
                         continue;
@@ -237,6 +238,7 @@ public class DuelEnrollment{
                 if (idx >= 0 && idx < options.length) {
                     plannedCourses.add(options[idx]);
                     undoStack.push(options[idx]); // Push to stack for undo
+                    lastArea = area; // For stack based undo
                 } else {throw new NumberFormatException("");} // So it is redone 
                     }
                     break;
