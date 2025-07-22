@@ -12,15 +12,20 @@ import java.util.Queue;
 import java.util.Stack;
 
 //*************************************DEFINING METHODS************************************
+// This class is used to plan college courses based on high school equivalency credits
+// It allows students to select courses from different IGETC areas and generates a plan based on current school year, semester, and completed courses.
 public class DuelEnrollment{
+    // The Course record holds the name of the course and whether it counts for high school credit
     record Course(String name, boolean countsForHS) {} // Record to hold course information
-
+    // This class holds the student input data
     static class studentINPUT {
         int schoolYear;
         String semester;
         boolean wantsSummer;
         LinkedList<String> completedCourses;
 
+        // Constructor for studentINPUT
+        // Initializes the student with school year, semester, summer course preference, and completed courses
         studentINPUT(int schoolYear, String semester, boolean wantsSummer, LinkedList<String> completedCourses) {
             this.schoolYear = schoolYear;
             this.semester = semester;
@@ -28,42 +33,44 @@ public class DuelEnrollment{
             this.completedCourses = completedCourses;
         }
     }
-    //public class InputHelper {
-    private static final Scanner scan = new Scanner(System.in);
 
+    // This scanner is used to read user input from the console
+    private static final Scanner scan = new Scanner(System.in);
 
     // Generic method to get validated input
     public static <T> T getValidatedInput(String prompt, List<T> validOptions, Class<T> type) {
         System.out.println(prompt);
+        // Initialize the input variable
         T input = null;
 
-
+        // This loop will continue until the user provides a valid input that matches one of the valid
         while (true) {
             try {
                 String userInput = scan.nextLine().trim();
 
-
+                // Check input type and parse accordingly
                 if (type == Integer.class) {
                     input = type.cast(Integer.parseInt(userInput));
                 } else if (type == String.class) {
                     input = type.cast(userInput);
                 }
 
-
+                // Check if the input is in the list of valid options
                 if (validOptions.contains(input)) {
                     return input;
                 } else {
                     System.out.println("Invalid option. Try again:");
                 }
 
-
+            
             } catch (Exception e) {
                 System.out.println("Invalid input. Please enter a " + type.getSimpleName() + ".");
             }
         }
     } // End of getValidatedInput
 
-
+    // This array holds the IGETC areas in which will be called later in the program
+    // Each area corresponds to a specific set of courses that students can choose from
     static final String[] IGETC_AREAS = {
         "Area 1A: English Communication",
         "Area 1B: Critical Thinking",
@@ -88,6 +95,7 @@ public class DuelEnrollment{
     static Stack<Course> undoStack = new Stack<>();
 
     //*************************************START OF PROGRAM*************************************
+    // Main method to run the program
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
 
@@ -117,9 +125,11 @@ public class DuelEnrollment{
         //Completed courses user input
         System.out.println("Have you completed any college courses?(ex. ENGL 01A) (yes/no): ");
         String completedCoursesResponse = "";
+        // Loop until a valid response is given
         while (!(Arrays.asList("yes", "no").contains(completedCoursesResponse))) {
             completedCoursesResponse = scan.nextLine();
-        }
+        } 
+        // If the user has completed courses, prompt for course names
         if (completedCoursesResponse.equalsIgnoreCase("yes")) {
             while (true) {
                 System.out.print("Enter course name (or type '-4' to finish): ");
@@ -127,10 +137,11 @@ public class DuelEnrollment{
                 if (completed.equals("-4")) break;
                 student.completedCourses.add(completed.toUpperCase());
             }
-        } else {
+        } else { // If no completed courses, initialize with an empty list
             System.out.println("No completed courses recorded.");
         }
         initializeCourses();
+        // Generate the plan based on the student input
         generatePLAN(student, scan);
 
         //NOTES ON REMINDERS AND LIMITS OF PROGRAM
@@ -146,8 +157,12 @@ public class DuelEnrollment{
         end(args);
     }
 
+    //*************************************GENERATE PLAN*************************************
+    // This method generates a plan based on the student's input and the courses available in each IGETC area
+    // It uses a queue to manage semesters and a stack for undo functionality
     static void generatePLAN(studentINPUT student, Scanner scan) {
         String[] semesters = {"Fall", "Spring", "Summer"};
+        // Initialize the queue with semesters based on the student's current semester
         int startIndex = 0;
 
         // Determine starting semester based on current semester
@@ -170,9 +185,12 @@ public class DuelEnrollment{
         plannedCourses.clear(); // Clear once before planning
 
         // IGETC AREA COURSE COMPLETED VALIDATION
+        // This loop iterates through each IGETC area and prompts the user to select courses
         Queue<String> IGETC_AREAS_Queue = new LinkedList<>(Arrays.asList(IGETC_AREAS)); 
+        // This loop will continue until all areas have been processed
         while (!IGETC_AREAS_Queue.isEmpty()) {
             String area = IGETC_AREAS_Queue.poll();
+            // Check if the area is already completed
             Course[] options = geCourses.get(area);
             if (options == null) {
                 System.out.println("No courses found for: " + area);
@@ -211,7 +229,8 @@ public class DuelEnrollment{
                         System.out.println("Last course selection undone: " + removed.name);
                         continue;
                     }
-
+            
+            // Split the input by commas and parse each selection
             String[] selections = input.split(",");
             for (String sel : selections) {
                 int idx = Integer.parseInt(sel.trim()) - 1;
@@ -248,17 +267,17 @@ public class DuelEnrollment{
         System.out.println("*************************************END OF PLANNING*************************************");
     }
 
+    //*************************************RECURSIVE PLANNER*************************************
+    // This method recursively plans courses for each semester until all courses are planned or semesters run out
     static void recursivePlanner(LinkedList<Course> courses, Queue<String> semesters, int sem_left) {
         if (courses.isEmpty() || sem_left <= 0) return;
+       // Print the current semester according to grade and how many are left
         sem_left -= 1;
         String sem = semesters.poll();
         semesters.add(sem); // Add back to the end of the Queue 
         System.out.println("\nSemester: " + sem);
 
-
-
-
-        int slots = Math.min(2, courses.size()); // Max classes per semester
+        int slots = Math.min(3, courses.size()); // Max classes per semester
         for (int i = 0; i < slots; i++) {
             Course course = courses.removeFirst();
             String marker = course.countsForHS ? "(*)" : "";
