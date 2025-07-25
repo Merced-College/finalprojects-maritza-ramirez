@@ -157,6 +157,7 @@ String summerResponse = InputUtils.getValidatedInput(
                 continue;
             }
 
+            ///*************************************LINEAR SEARCH*************************************
             // Skip already completed
             boolean alreadyCompleted = false;
             for (Course c : options) {
@@ -174,9 +175,11 @@ String summerResponse = InputUtils.getValidatedInput(
                 System.out.println((i + 1) + ". " + options[i].name + " " + marker);
             }
 
-            //undoStack.clear(); // Clear the stack for each area selection
+            
             System.out.println("You can select courses from this area. Type 'undo' to remove the last selection.");
             System.out.print("Choose course number(s) for this area (comma separated,ex. 1,3 or type 'undo'): ");
+
+            ///*************************************STACK-BASED UNDO*************************************
             while (true) { 
                 try {
                     String input = scan.nextLine();
@@ -206,6 +209,9 @@ String summerResponse = InputUtils.getValidatedInput(
                 }
             }
         }
+
+        //PRINTING PLANNED COURSES SEMESTER BY SEMESTER
+        //***********************************SEMESTER PRINTING ********************************* */
         System.out.println("\nGeneral Education Plan:");
         // Calculate the number of semesters left in high school
         int sem_left = (12 - student.schoolYear); // how many years until graduation
