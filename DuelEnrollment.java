@@ -8,10 +8,8 @@ import java.util.Scanner;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
-//import studentINPUT; // Importing the studentINPUT class
 
 //*************************************DEFINING METHODS************************************
 // This class is used to plan college courses based on high school equivalency credits
@@ -19,41 +17,7 @@ import java.util.Stack;
 public class DuelEnrollment{
     // The Course record holds the name of the course and whether it counts for high school credit
     record Course(String name, boolean countsForHS) {} // Record to hold course information
-    
-    // This scanner is used to read user input from the console
-    private static final Scanner scan = new Scanner(System.in);
 
-    // Generic method to get validated input
-    public static <T> T getValidatedInput(String prompt, List<T> validOptions, Class<T> type) {
-        System.out.println(prompt);
-        // Initialize the input variable
-        T input = null;
-
-        // This loop will continue until the user provides a valid input that matches one of the valid
-        while (true) {
-            try {
-                String userInput = scan.nextLine().trim();
-
-                // Check input type and parse accordingly
-                if (type == Integer.class) {
-                    input = type.cast(Integer.parseInt(userInput));
-                } else if (type == String.class) {
-                    input = type.cast(userInput);
-                }
-
-                // Check if the input is in the list of valid options
-                if (validOptions.contains(input)) {
-                    return input;
-                } else {
-                    System.out.println("Invalid option. Try again:");
-                }
-
-            
-            } catch (Exception e) {
-                System.out.println("Invalid input. Please enter a " + type.getSimpleName() + ".");
-            }
-        }
-    } // End of getValidatedInput
 
     // This array holds the IGETC areas in which will be called later in the program
     // Each area corresponds to a specific set of courses that students can choose from
@@ -92,17 +56,26 @@ public class DuelEnrollment{
         System.out.println("Welcome to the college course planning program!");
 
        //School year user input
-        int schoolYear = getValidatedInput("What is your current school year? (9, 10, 11, 12)",
-        Arrays.asList(9, 10, 11, 12), Integer.class);
-        
-        //Semester user input
-        String semester = getValidatedInput("What semester are you currently in? (Fall, Spring, Summer)", 
-        Arrays.asList("Fall", "Spring", "Summer"), String.class);
+        int schoolYear = InputUtils.getValidatedInput(
+    "What is your current school year? (9, 10, 11, 12)",
+    Arrays.asList(9, 10, 11, 12),
+    Integer.class,
+    scan
+);
 
+String semester = InputUtils.getValidatedInput(
+    "What semester are you currently in? (Fall, Spring, Summer)",
+    Arrays.asList("Fall", "Spring", "Summer"),
+    String.class,
+    scan
+);
 
-        //Summer courses user input
-        String summerResponse = getValidatedInput("Do you want to take summer courses? (yes or no)",
-        Arrays.asList("yes", "no"), String.class);
+String summerResponse = InputUtils.getValidatedInput(
+    "Do you want to take summer courses? (yes or no)",
+    Arrays.asList("yes", "no"),
+    String.class,
+    scan
+);
         boolean wantsSummer = summerResponse.equalsIgnoreCase("yes");
 
         //Creating student
