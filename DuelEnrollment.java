@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
+//import studentINPUT; // Importing the studentINPUT class
 
 //*************************************DEFINING METHODS************************************
 // This class is used to plan college courses based on high school equivalency credits
@@ -18,23 +19,7 @@ import java.util.Stack;
 public class DuelEnrollment{
     // The Course record holds the name of the course and whether it counts for high school credit
     record Course(String name, boolean countsForHS) {} // Record to hold course information
-    // This class holds the student input data
-    static class studentINPUT {
-        int schoolYear;
-        String semester;
-        boolean wantsSummer;
-        LinkedList<String> completedCourses;
-
-        // Constructor for studentINPUT
-        // Initializes the student with school year, semester, summer course preference, and completed courses
-        studentINPUT(int schoolYear, String semester, boolean wantsSummer, LinkedList<String> completedCourses) {
-            this.schoolYear = schoolYear;
-            this.semester = semester;
-            this.wantsSummer = wantsSummer;
-            this.completedCourses = completedCourses;
-        }
-    }
-
+    
     // This scanner is used to read user input from the console
     private static final Scanner scan = new Scanner(System.in);
 
