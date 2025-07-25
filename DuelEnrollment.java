@@ -1,7 +1,7 @@
 //Name: Maritza Ramirez
 //Date: July 14, 2025
 //This program is a way for college students to plan their courses based on high school equivalency credits.
-//It allows students to select courses from different IGETC areas and generates a plan based on
+//It allows students to select courses from different IGETC areas and generates a plan based on there current school year, semester, and completed courses.
 
 //*************************************IMPORTS*************************************
 import java.util.Scanner;
